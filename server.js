@@ -5,9 +5,7 @@ let assignment = require('./routes/assignments');
 let student = require('./routes/students');
 const cors = require('cors');
 
-app.use(cors({
-  origin: 'https://frontend-tsiky-lina.onrender.com'
-}));
+app.use(cors());
 
 let mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
