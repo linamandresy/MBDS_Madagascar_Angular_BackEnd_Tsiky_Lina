@@ -3,6 +3,7 @@ let app = express();
 let bodyParser = require('body-parser');
 let assignment = require('./routes/assignments');
 let student = require('./routes/students');
+let user = require('./routes/users');
 const cors = require('cors');
 
 app.use(cors());
@@ -64,6 +65,12 @@ app.route(prefix + '/students')
 app.route(prefix + '/students/:id')
   .get(student.getStudent)
   .delete(student.deleteStudent);
+
+  app.route(prefix+'/users')
+    .post(user.register);
+
+  app.route(prefix+'/users/me')
+    .get(user.me);
 
 // On démarre le serveur
 app.listen(port, "0.0.0.0");
