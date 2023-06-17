@@ -18,7 +18,7 @@ const uri = 'mongodb+srv://lina:diskut-xavso9-seTzyg@assignments.34yahgk.mongodb
 const options = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  useFindAndModify:false
+  useFindAndModify: false
 };
 
 mongoose.connect(uri, options)
@@ -26,7 +26,7 @@ mongoose.connect(uri, options)
     console.log("Connecté à la base MongoDB assignments dans le cloud !");
     console.log("at URI = " + uri);
     console.log("vérifiez with http://localhost:8010/api/assignments que cela fonctionne")
-    },
+  },
     err => {
       console.log('Erreur de connexion: ', err);
     });
@@ -40,7 +40,7 @@ app.use(function (req, res, next) {
 });
 
 // Pour les formulaires
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 let port = process.env.PORT || 8010;
@@ -66,11 +66,14 @@ app.route(prefix + '/students/:id')
   .get(student.getStudent)
   .delete(student.deleteStudent);
 
-  app.route(prefix+'/users')
-    .post(user.register);
+app.route(prefix + '/users')
+  .post(user.register);
 
-  app.route(prefix+'/users/me')
-    .get(user.me);
+app.route(prefix + '/users/login')
+  .post(user.login);
+
+app.route(prefix + '/users/me')
+  .get(user.me);
 
 // On démarre le serveur
 app.listen(port, "0.0.0.0");

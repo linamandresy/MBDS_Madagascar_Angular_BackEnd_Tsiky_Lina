@@ -16,7 +16,7 @@ function register(req,res){
         if(err){
             return res.status(500).send("Cannot register user");
         }
-        var token = jwt.sign({id:user._id},config.secret,{expiresIn:86400});
+        let token = jwt.sign({id:user._id},config.secret,{expiresIn:86400});
         res.status(200).send({auth:true,token:token});
     });
 }
@@ -41,4 +41,15 @@ function checkConnection(req,res){
     });
 }
 
-module.exports ={ register , me , checkConnection };
+function login(req,res){
+    
+    User.findOne({userName:req.body.username,} ,(err,user)=>{
+        if(err || user==null) return res.status(401).send("Wrong username ");
+        console.log(user);
+        let passwordIsValid = bcrypt.compareSync(req.body.password,user.password);
+        if(!passwordIsValid) return res.status(401).send("Wrong password");
+        let token = jwt.sign({id:user._id},config.secret,{expiresIn:86400});
+        res.status(200).send({auth:true,token:token});
+    });
+}
+module.exports ={ register , me , checkConnection , login };
