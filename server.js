@@ -5,6 +5,15 @@ let assignment = require('./routes/assignments');
 let student = require('./routes/students');
 let user = require('./routes/users');
 const cors = require('cors');
+var fileupload = require("express-fileupload");
+
+var uploaderApi = require("./routes/upload");
+
+app.use(fileupload({
+	limits:{
+		fileSize: 50 * 1024 * 1024
+	}
+}))
 
 app.use(cors());
 
@@ -74,6 +83,8 @@ app.route(prefix + '/users/login')
 
 app.route(prefix + '/users/me')
   .get(user.me);
+
+app.use('/api/file-upload',uploaderApi);
 
 // On démarre le serveur
 app.listen(port, "0.0.0.0");
