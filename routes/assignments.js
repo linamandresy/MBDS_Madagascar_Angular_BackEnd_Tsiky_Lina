@@ -11,6 +11,15 @@ function getAssignmentsSansPagination(req, res){
     });
 }
 
+function getAssignmentsByRendu(req, res) {
+    let isRendu = req.params.rendu;
+
+    Assignment.find({rendu: isRendu}, (err, assignment) =>{
+        if(err){res.send(err)}
+        res.json(assignment);
+    })
+}
+
 function getAssignments(req, res) {
     var aggregateQuery = Assignment.aggregate();
     
@@ -95,4 +104,4 @@ async function deleteAssignment(req, res) {
 
 
 
-module.exports = { getAssignments, postAssignment, getAssignment, updateAssignment, deleteAssignment };
+module.exports = { getAssignments, getAssignmentsByRendu, postAssignment, getAssignment, updateAssignment, deleteAssignment };
