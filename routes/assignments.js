@@ -1,5 +1,5 @@
 let Assignment = require('../model/assignment');
-
+let usersRoute = require('../routes/users');
 // Récupérer tous les assignments (GET)
 function getAssignmentsSansPagination(req, res){
     Assignment.find((err, assignments) => {
@@ -58,7 +58,9 @@ function postAssignment(req, res){
 }
 
 // Update d'un assignment (PUT)
-function updateAssignment(req, res) {
+async function updateAssignment(req, res) {
+    let isAdmin = await usersRoute.checkConnection(req,res);
+    if(!isAdmin) res.status(403).send("Only admin can update assignments");
     console.log("UPDATE recu assignment : ");
     console.log(req.body);
     
@@ -76,8 +78,9 @@ function updateAssignment(req, res) {
 }
 
 // suppression d'un assignment (DELETE)
-function deleteAssignment(req, res) {
-
+async function deleteAssignment(req, res) {
+    let isAdmin = await usersRoute.checkConnection(req,res);
+    if(!isAdmin) res.status(403).send("Only admin can update assignments");
     Assignment.findByIdAndRemove(req.params.id, (err, assignment) => {
         if (err) {
             res.send(err);
