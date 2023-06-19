@@ -4,6 +4,7 @@ let bodyParser = require('body-parser');
 let assignment = require('./routes/assignments');
 let student = require('./routes/students');
 let user = require('./routes/users');
+let matiere = require('./routes/matiere');
 const cors = require('cors');
 var fileupload = require("express-fileupload");
 
@@ -85,6 +86,7 @@ app.route(prefix + '/users/me')
   .get(user.me);
 
 app.use('/api/file-upload',uploaderApi);
+app.use(prefix+'matieres',matiere);
 
 // On démarre le serveur
 app.listen(port, "0.0.0.0");
