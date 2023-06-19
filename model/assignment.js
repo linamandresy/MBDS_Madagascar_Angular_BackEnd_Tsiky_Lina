@@ -1,3 +1,4 @@
+const { ObjectId } = require('mongodb');
 let mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 var aggregatePaginate = require("mongoose-aggregate-paginate-v2");
@@ -7,8 +8,8 @@ let AssignmentSchema = Schema({
     dateDeRendu: Date,
     nom: String,
     rendu: Boolean,
-    idAuthor:String,
-    idMatiere:String,
+    idAuthor:ObjectId,
+    idMatiere:ObjectId,
     note:Number,
     remarque:String
 });
