@@ -86,7 +86,7 @@ app.route(prefix + '/users/me')
   .get(user.me);
 
 app.use('/api/file-upload',uploaderApi);
-app.use(prefix+'matieres',matiere);
+app.use(prefix+'/matieres',matiere);
 
 // On démarre le serveur
 app.listen(port, "0.0.0.0");
