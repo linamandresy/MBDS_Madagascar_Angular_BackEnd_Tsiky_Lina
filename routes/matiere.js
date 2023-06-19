@@ -20,12 +20,13 @@ router.post('/',async (req,res,next)=>{
 });
 
 router.get('/',(req,res,next)=>{
-    let aggregateQuery = Matiere.aggregateQuery();
+    let aggregateQuery = Matiere.aggregate();
 
     Matiere.aggregatePaginate(aggregateQuery,{
         page:parseInt(req.query.page)||1,
         limit: parseInt(req.query.limit)||10
     },(err,matiere)=>{
+        console.log(err);
         if(err){
            return  res.status(500).send(err);
         }
