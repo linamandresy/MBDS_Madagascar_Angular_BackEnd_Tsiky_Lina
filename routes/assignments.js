@@ -13,12 +13,47 @@ function getAssignmentsSansPagination(req, res) {
 }
 
 function getAssignmentsByRendu(req, res) {
-    let isRendu = req.params.rendu;
+    let isRendu = (req.params.rendu==='true');
 
-    Assignment.find({ rendu: isRendu }, (err, assignment) => {
-        if (err) { res.send(err) }
-        res.json(assignment);
-    })
+    // Assignment.find({ rendu: isRendu }, (err, assignment) => {
+    //     if (err) { res.send(err) }
+    //     res.json(assignment);
+    // })
+
+    var aggregateQuery = Assignment.aggregate([{
+            $match:{ 
+                rendu: isRendu 
+            }
+        }
+        ,{
+        $lookup: {
+            from: 'matieres',
+            localField: 'idMatiere',
+            foreignField: '_id',
+            as: 'matiere'
+        }
+    }, {
+        $lookup: {
+            from: 'students',
+            localField: 'idAuthor',
+            foreignField: '_id',
+            as: 'auteur'
+        }
+    }
+    ]);
+    Assignment.aggregatePaginate(
+        aggregateQuery,
+        {
+            page: parseInt(req.query.page) || 1,
+            limit: parseInt(req.query.limit) || 10,
+        },
+        (err, assignments) => {
+            if (err) {
+                res.send(err);
+            }
+            res.send(assignments);
+        }
+    );
 }
 
 function getAssignments(req, res) {
