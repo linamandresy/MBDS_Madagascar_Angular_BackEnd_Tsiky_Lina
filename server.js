@@ -75,6 +75,9 @@ app.route(prefix + '/students')
   .post(student.postStudent)
   .put(student.updateStudent);
 
+app.route(prefix + '/students/all')
+  .get(student.getStudentsSansPagination);
+
 app.route(prefix + '/students/:id')
   .get(student.getStudent)
   .delete(student.deleteStudent);

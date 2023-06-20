@@ -2,13 +2,17 @@ let Student = require('../model/student');
 
 // Récupérer tous les students (GET)
 function getStudentsSansPagination(req, res){
-    Student.find((err, students) => {
-        if(err){
-            res.send(err)
+    var aggregateQuery = Student.aggregate();
+    
+    Student.aggregatePaginate(aggregateQuery,
+      {},
+      (err, students) => {
+        if (err) {
+          res.send(err);
         }
-
         res.send(students);
-    });
+      }
+    );
 }
 
 function getStudents(req, res) {
@@ -90,4 +94,4 @@ function deleteStudent(req, res) {
 
 
 
-module.exports = { getStudents, postStudent, getStudent, updateStudent, deleteStudent };
+module.exports = { getStudents, postStudent, getStudent, updateStudent, deleteStudent , getStudentsSansPagination};
