@@ -36,10 +36,10 @@ function me(req,res){
 function checkConnection(req,res){
     return new Promise((resolve,reject)=>{
         var token = req.headers['x-access-token'];
-        if(!token)  resolve(res.status(401).send({auth:false,message:'No token provided'}));
+        if(!token)  reject(res.status(401).send({auth:false,message:'No token provided'}));
     
         jwt.verify(token,config.secret,function (err,decoded){
-            if(err) resolve(res.status(401).send({auth:false,message:'Failed to authenticate token'}));
+            if(err) reject(res.status(401).send({auth:false,message:'Failed to authenticate token'}));
             User.findOne({_id:ObjectId(decoded.id)} ,(err,user)=>{
                 if(err || user==null) resolve(res.status(401).send("Not connected"));
                 let isAdmin = user.userName==='admin'
@@ -54,7 +54,7 @@ function login(req,res){
     User.findOne({userName:req.body.username} ,(err,user)=>{
         if(err || user==null) return res.status(401).send("Wrong username ");
         console.log(user);
-        let isAdmin = user.userName==='admin'
+        let isAdmin = user.userName==='admin';
         let passwordIsValid = bcrypt.compareSync(req.body.password,user.password);
         if(!passwordIsValid) return res.status(401).send("Wrong password");
         let token = jwt.sign({id:user._id},config.secret,{expiresIn:86400});

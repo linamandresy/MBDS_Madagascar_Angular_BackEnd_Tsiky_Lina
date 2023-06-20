@@ -40,6 +40,7 @@ router.get('/all',(req,res,next)=>{
     Matiere.aggregatePaginate(aggregateQuery,{},(err,matiere)=>{
         console.log(err);
         if(err){
+            
            return  res.status(500).send(err);
         }
         res.status(200).send(matiere);

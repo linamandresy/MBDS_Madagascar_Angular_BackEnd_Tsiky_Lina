@@ -15,8 +15,8 @@ function getAssignmentsSansPagination(req, res) {
 function getAssignmentsByRendu(req, res) {
     let isRendu = req.params.rendu;
 
-    Assignment.find({rendu: isRendu}, (err, assignment) =>{
-        if(err){res.send(err)}
+    Assignment.find({ rendu: isRendu }, (err, assignment) => {
+        if (err) { res.send(err) }
         res.json(assignment);
     })
 }
@@ -59,7 +59,7 @@ function getAssignments(req, res) {
 function getAssignment(req, res) {
     let assignmentId = req.params.id;
 
-    Assignment.findOne({ id: assignmentId }, (err, assignment) => {
+    Assignment.findOne({ _id: ObjectId(assignmentId) }, (err, assignment) => {
         if (err) { res.send(err) }
         res.json(assignment);
     })
@@ -91,28 +91,47 @@ function postAssignment(req, res) {
 
 // Update d'un assignment (PUT)
 async function updateAssignment(req, res) {
-    let isAdmin = await usersRoute.checkConnection(req, res);
-    if (!isAdmin) res.status(403).send("Only admin can update assignments");
-    console.log("UPDATE recu assignment : ");
-    console.log(req.body);
+    try {
+        let isAdmin = await usersRoute.checkConnection(req, res);
+        if (!isAdmin) return res.status(403).send("Only admin can update assignments");
+        console.log("UPDATE recu assignment : ");
+        let assignment = {        
+            id : req.body.id,
+            nom : req.body.nom,
+            dateDeRendu : req.body.dateDeRendu,
+            rendu : req.body.rendu,
+            idAuthor : ObjectId(req.body.idAuthor),
+            idMatiere : ObjectId(req.body.idMatiere),
+            note : req.body.note,
+            remarque : req.body.remarque,
+        };
 
-    Assignment.findByIdAndUpdate(req.body._id, req.body, { new: true }, (err, assignment) => {
-        if (err) {
-            console.log(err);
-            res.send(err)
-        } else {
-            res.json({ message: assignment.nom + 'updated' })
+        if(assignment.note<0 || assignment.note>20) {
+            throw new Error('Note invalide');
         }
 
-        // console.log('updated ', assignment)
-    });
+        // code pris sur stack overflow
+        console.log(assignment);
+        Assignment.findByIdAndUpdate(ObjectId(req.body._id), assignment, { new: true }, (err, assignment) => {
+            if (err ) {
+                console.log(err);
+                if(!res.closed) res.send(err)
+            } else {
+                if(!res.closed) res.json({ message: assignment.nom + 'updated' })
+            }
+
+            // console.log('updated ', assignment)
+        });
+    } catch (error) {
+        if(!res.closed) res.status(400).json({message:error.message});
+    }
 
 }
 
 // suppression d'un assignment (DELETE)
 async function deleteAssignment(req, res) {
     let isAdmin = await usersRoute.checkConnection(req, res);
-    if (!isAdmin) res.status(403).send("Only admin can update assignments");
+    if (!isAdmin) return res.status(403).send("Only admin can update assignments");
     Assignment.findByIdAndRemove(req.params.id, (err, assignment) => {
         if (err) {
             res.send(err);
