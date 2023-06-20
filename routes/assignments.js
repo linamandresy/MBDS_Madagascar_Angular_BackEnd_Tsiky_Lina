@@ -128,7 +128,7 @@ function postAssignment(req, res) {
 async function updateAssignment(req, res) {
     try {
         let isAdmin = await usersRoute.checkConnection(req, res);
-        if (!isAdmin) return res.status(403).send("Only admin can update assignments");
+        if (!isAdmin && !req.params.admin) return res.status(403).send("Only admin can update assignments");
         console.log("UPDATE recu assignment : ");
         let assignment = {        
             id : req.body.id,
